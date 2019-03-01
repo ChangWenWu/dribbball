@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
 
 class _Page {
-  _Page({ this.label });
-  final String label;
-  String get id => label[0];
+  const _Page({this.icon, this.text});
+  final IconData icon;
+  final String text;
+  String get id => text[0];
   @override
-  String toString() => '$runtimeType("$label")';
+  String toString() => '$runtimeType("$text")';
 }
 
 class _CardData {
-  const _CardData({ this.title, this.imageAsset, this.imageAssetPackage });
+  const _CardData({this.title, this.imageAsset, this.imageAssetPackage});
   final String title;
   final String imageAsset;
   final String imageAssetPackage;
 }
 
 final Map<_Page, List<_CardData>> _allPages = <_Page, List<_CardData>>{
-  _Page(label: 'POPULAR'): <_CardData>[
-  ],
-  _Page(label: 'RECENT'): <_CardData>[
-  ],
+  _Page(icon: Icons.hot_tub, text: 'POPULAR'): <_CardData>[],
+  _Page(icon: Icons.timeline, text: 'RECENT'): <_CardData>[],
 };
 
 class _CardDataItem extends StatelessWidget {
-  const _CardDataItem({ this.page, this.data });
+  const _CardDataItem({this.page, this.data});
 
   static const double height = 272.0;
   final _Page page;
@@ -39,9 +38,8 @@ class _CardDataItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Align(
-              alignment: page.id == 'H'
-                ? Alignment.centerLeft
-                : Alignment.centerRight,
+              alignment:
+                  page.id == 'H' ? Alignment.centerLeft : Alignment.centerRight,
               child: CircleAvatar(child: Text('${page.id}')),
             ),
             SizedBox(
@@ -80,16 +78,21 @@ class _HomePageState extends State<HomePage> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverOverlapAbsorber(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 child: SliverAppBar(
                   title: const Text('Dribbball'),
-                  pinned: true,
-                  expandedHeight: 150.0,
+                  pinned: false,
+                  centerTitle: true,
+                  floating: false,
                   forceElevated: innerBoxIsScrolled,
                   bottom: TabBar(
-                    tabs: _allPages.keys.map<Widget>(
-                      (_Page page) => Tab(text: page.label),
-                    ).toList(),
+                    tabs: _allPages.keys
+                        .map<Widget>(
+                          (_Page page) =>
+                              Tab(text: page.text),
+                        )
+                        .toList(),
                   ),
                 ),
               ),
@@ -106,7 +109,9 @@ class _HomePageState extends State<HomePage> {
                       key: PageStorageKey<_Page>(page),
                       slivers: <Widget>[
                         SliverOverlapInjector(
-                          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                          handle:
+                              NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                  context),
                         ),
                         SliverPadding(
                           padding: const EdgeInsets.symmetric(
